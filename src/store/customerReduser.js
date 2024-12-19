@@ -1,12 +1,27 @@
-const ADD_MANY_CUSTOMERS = 'ADD_MANY_CUSTOMERS';
+import { fetchCustomers } from "../asyncAction/customers";
 
-export const customerReducer = (state = [{name:'Антон'}] , action) =>{
-    switch(action.type){
-        case ADD_MANY_CUSTOMERS:
-            return [...state, ...action.payload]
-        default:
-            return state
-    }
-}
+const initialState = {
+  customers: [{ name: "Антон" }],
+  loading: false,
+  error: null,
+};
 
-export const addManyCustomersAction = (payload) => ({type: ADD_MANY_CUSTOMERS, payload})
+export const customerReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case fetchCustomers.pending.type:
+      return { ...state, loading: true, error: null };
+
+    case fetchCustomers.fulfilled.type:
+      return {
+        ...state,
+        loading: false,
+        customers: [...state.customers, ...action.payload],
+      };
+
+    case fetchCustomers.rejected.type:
+      return { ...state, loading: false, error: action.error.message };
+
+    default:
+      return state;
+  }
+};
